@@ -1,0 +1,29 @@
+# swissknife-mcp server configuration.
+# Values may reference environment variables: ${VAR} or ${VAR:-default}.
+# Env overrides: SWISSKNIFE_TOOLSETS, SWISSKNIFE_EXCLUDE_TOOLSETS, SWISSKNIFE_OMIT_TOOLS,
+#                SWISSKNIFE_TRANSPORT, SWISSKNIFE_HOST, SWISSKNIFE_PORT, SWISSKNIFE_LOG_LEVEL
+# CLI flags (--toolsets, --exclude-toolsets, --omit-tools, --transport, ...) win over both.
+
+server:
+  name: swissknife-mcp
+  transport: http          # http (streamable HTTP) | stdio
+  host: 127.0.0.1
+  port: 8000
+  path: /mcp
+  log_level: INFO
+  # instructions: "Custom instructions sent to clients (default: auto-generated list of toolsets)"
+
+# Server-side selection. Clients can narrow further per connection with
+#   http://host:port/mcp?toolsets=datadog&omit_tools=get_dashboard
+# but can never re-enable anything excluded here.
+toolsets:
+  include: [all]           # [all] or explicit list, e.g. [datadog]
+  exclude: []              # toolsets to skip even if included
+
+omit_tools: []             # tool names never exposed, e.g. [get_dashboard]
+
+# Per-toolset settings, available inside the toolset as `self.config`.
+toolset_config:
+  datadog:
+    site: ${DD_SITE:-datadoghq.com}
+    timeout: 30
